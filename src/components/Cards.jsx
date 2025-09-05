@@ -7,18 +7,16 @@ import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Edit, Trash2 } from 'lucide-react'
+import ClipLoader from 'react-spinners/ClipLoader'
 
 function Cards() {
   const dispatch = useDispatch()
-
-  // bring the filtered products from redux
   const searchResults = useSelector((state) => state.searchProduct.searchResults)
 
-  const [loading, setLoading] = useState(false)
   const [confirmId, setConfirmId] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    // fetch products and store them in search slice
     dispatch(fetchProducts())
       .unwrap()
       .then((data) => {
@@ -27,19 +25,25 @@ function Cards() {
   }, [dispatch])
 
   const handleDelete = async (id) => {
-    setLoading(true)
+    setIsDeleting(true)
+
     try {
       await axios.delete(`https://fakestoreapi.com/products/${id}`)
-      // remove from redux search slice
       const newList = searchResults.filter((item) => item.id !== id)
       dispatch(setAllProducts(newList))
-      toast.success('Product deleted successfully!')
+
+      // hide modal
+      setConfirmId(null)
+      setIsDeleting(false)
+
+      // toast success
+      toast.success('Product deleted successfully!', { autoClose: 3000 })
     } catch (error) {
       console.error(error)
-      toast.error('Failed to delete product!')
-    } finally {
-      setLoading(false)
+      // hide modal
       setConfirmId(null)
+      setIsDeleting(false)
+      toast.error('Failed to delete product!', { autoClose: 3000 })
     }
   }
 
@@ -57,10 +61,7 @@ function Cards() {
                 alt={item.title}
                 className="h-40 w-full object-contain mb-4 transition-transform duration-300 group-hover:scale-105"
               />
-              {/* overlay */}
               <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-
-              {/* edit/delete buttons */}
               <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                 <NavLink to={`/edit/${item.id}`}>
                   <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100 cursor-pointer">
@@ -68,7 +69,10 @@ function Cards() {
                   </button>
                 </NavLink>
                 <button
-                  onClick={() => setConfirmId(item.id)}
+                  onClick={() => {
+                    setIsDeleting(false)
+                    setConfirmId(item.id)
+                  }}
                   className="bg-red-500 p-2 rounded-full shadow hover:bg-red-600 cursor-pointer"
                 >
                   <Trash2 size={18} className="text-white" />
@@ -95,13 +99,6 @@ function Cards() {
         ))}
       </div>
 
-      {/* Loader overlay */}
-      {loading && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      )}
-
       {/* Confirmation modal */}
       {confirmId && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
@@ -110,20 +107,29 @@ function Cards() {
             <p className="text-sm text-gray-600 mb-4">
               Are you sure you want to delete this product?
             </p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setConfirmId(null)}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDelete(confirmId)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
+
+            {isDeleting ? (
+              // show spinner inside modal instead of buttons
+              <div className="flex items-center justify-center gap-2 py-3">
+                <ClipLoader color="#000" size={24} />
+                <span>Deleting...</span>
+              </div>
+            ) : (
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setConfirmId(null)}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(confirmId)}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
