@@ -25,25 +25,43 @@ function Cards() {
   }, [dispatch])
 
   const handleDelete = async (id) => {
+    // show spinner in modal
     setIsDeleting(true)
+
+    // show toast at top
+    const toastId = toast.loading('Deleting product...')
 
     try {
       await axios.delete(`https://fakestoreapi.com/products/${id}`)
+
+      // update redux list
       const newList = searchResults.filter((item) => item.id !== id)
       dispatch(setAllProducts(newList))
 
-      // hide modal
+      // turn toast into success
+      toast.update(toastId, {
+        render: 'Product deleted successfully!',
+        type: 'success',
+        isLoading: false,
+        autoClose: 3000,
+      })
+
+      // close modal after success
       setConfirmId(null)
       setIsDeleting(false)
-
-      // toast success
-      toast.success('Product deleted successfully!', { autoClose: 3000 })
     } catch (error) {
       console.error(error)
-      // hide modal
-      setConfirmId(null)
+
+      // turn toast into error
+      toast.update(toastId, {
+        render: 'Failed to delete product!',
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      })
+
+      // keep modal open but reset spinner
       setIsDeleting(false)
-      toast.error('Failed to delete product!', { autoClose: 3000 })
     }
   }
 
@@ -107,29 +125,22 @@ function Cards() {
             <p className="text-sm text-gray-600 mb-4">
               Are you sure you want to delete this product?
             </p>
-
-            {isDeleting ? (
-              // show spinner inside modal instead of buttons
-              <div className="flex items-center justify-center gap-2 py-3">
-                <ClipLoader color="#000" size={24} />
-                <span>Deleting...</span>
-              </div>
-            ) : (
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setConfirmId(null)}
-                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  disabled={isDeleting}
+                  className={`px-4 py-2 ${isDeleting ? "cursor-not-allowed":"cursor-pointer"} bg-gray-200 rounded hover:bg-gray-300`}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(confirmId)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  disabled={isDeleting}
+                  className= {`px-4 py-2 bg-red-500 ${isDeleting ? "cursor-not-allowed":"cursor-pointer"} text-white rounded hover:bg-red-600`}
                 >
                   Delete
                 </button>
               </div>
-            )}
           </div>
         </div>
       )}
