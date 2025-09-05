@@ -1,8 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCartShopping, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { faHeart } from '@fortawesome/free-regular-svg-icons'
+import {seachProducts} from '../store/slices/searchProducts'
 
 function NavBar() {
+
+  const handleSearch = (e) => {
+    dispatch(seachProducts(e.target.value))
+  }
   return (
     <div className="bg-[#FAFAFA]">
       {/* full-width header */}
@@ -19,6 +24,7 @@ function NavBar() {
             <FontAwesomeIcon
               icon={faMagnifyingGlass}
               className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6C6C6C]"
+              onChange={handleSearch}
             />
             <input
               type="text"
