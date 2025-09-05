@@ -2,17 +2,24 @@ import React, { useEffect, useState } from 'react'
 import Skeleton from '@mui/material/Skeleton'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import {addProduct} from '../store/slices/addProduct'
 
 function AddProduct() {
-  const [form, setForm] = useState({
-    title: '',
-    price: '',
-    description: '',
-    category: '',
-    image: '',
-  })
+    const {id} = useParams()
+    const [loading, setLoading] = useState(true)
+    const dispatch = useDispatch()
+    const {data: product} = useSelector((state) => state.addnewProduct)
 
-  const [loading, setLoading] = useState(true)
+    const [form, setForm] = useState({
+        title: '',
+        price: '',
+        description: '',
+        category: '',
+        image: '',
+    })
+
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500)
@@ -24,7 +31,7 @@ function AddProduct() {
     setForm({ ...form, [name]: value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault()
     if (
       form.title === '' ||
@@ -35,10 +42,13 @@ function AddProduct() {
     ) {
       toast.error('Please fill all fields!')
     } else {
-      toast.success('Product added successfully!')
-      // here you can do API POST call to add the product
-      // then clear form:
-      setForm({ title: '', price: '', description: '', category: '', image: '' })
+        try {
+        await dispatch(addProduct(form)).unwrap() 
+        toast.success('Product added successfully!')
+        setForm({ title: '', price: '', description: '', category: '', image: '' }) 
+      } catch (error) {
+        toast.error('Failed to add product!')
+      }
     }
   }
 

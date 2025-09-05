@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react'
 import Skeleton from '@mui/material/Skeleton'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useParams, useNavigate  } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {fetchProuctByid, fetchupdatedProduct} from '../store/slices/editProduct'
 
 function EditCard() {
   const {id} = useParams()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
-  const {data: product, isLoading, isUpdating} = useSelector((state) =>  state.editproductDetails)
+  const {data: product} = useSelector((state) =>  state.editproductDetails)
 
   const [form, setForm] = useState({
     id: '',
