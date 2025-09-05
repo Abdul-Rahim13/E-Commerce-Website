@@ -1,18 +1,24 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
-export const searchProductsSlice = createSlice({
-    name: 'search',
-    initialState:{
-        searchResults: []
+const searchProductsSlice = createSlice({
+  name: 'search',
+  initialState: {
+    allProducts: [],      
+    searchResults: []
+  },
+  reducers: {
+    setAllProducts: (state, action) => {
+      state.allProducts = action.payload
+      state.searchResults = action.payload 
     },
-    reducers: {
-        searchProducts: (state, action) => {
-            const keyword = action.payload.toLowerCase()
-            state.searchResults = state.users.filter((item) => {
-                return item.name.toLowerCase().includes(keyword)
-            })
-        }
+    searchProducts: (state, action) => {
+      const keyword = action.payload.toLowerCase()
+      state.searchResults = state.allProducts.filter((item) =>
+        item.title.toLowerCase().includes(keyword)
+      )
     }
+  }
 })
 
+export const { setAllProducts, searchProducts } = searchProductsSlice.actions
 export default searchProductsSlice.reducer

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts } from '../store/slices/fetchProduct'
+import { setAllProducts } from '../store/slices/searchProducts'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
@@ -8,37 +9,44 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Edit, Trash2 } from 'lucide-react'
 
 function Cards() {
-  const dispatch = useDispatch();
-  const { data: products } = useSelector((state) => state.products);
-  const [localProducts, setLocalProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [confirmId, setConfirmId] = useState(null);
+  const dispatch = useDispatch()
+
+  // bring the filtered products from redux
+  const searchResults = useSelector((state) => state.searchProduct.searchResults)
+
+  const [loading, setLoading] = useState(false)
+  const [confirmId, setConfirmId] = useState(null)
 
   useEffect(() => {
+    // fetch products and store them in search slice
     dispatch(fetchProducts())
       .unwrap()
-      .then((data) => setLocalProducts(data));
-  }, [dispatch]);
+      .then((data) => {
+        dispatch(setAllProducts(data))
+      })
+  }, [dispatch])
 
   const handleDelete = async (id) => {
-    setLoading(true);
+    setLoading(true)
     try {
-      await axios.delete(`https://fakestoreapi.com/products/${id}`);
-      setLocalProducts((prev) => prev.filter((item) => item.id !== id));
-      toast.success('Product deleted successfully!');
+      await axios.delete(`https://fakestoreapi.com/products/${id}`)
+      // remove from redux search slice
+      const newList = searchResults.filter((item) => item.id !== id)
+      dispatch(setAllProducts(newList))
+      toast.success('Product deleted successfully!')
     } catch (error) {
-      console.error(error);
-      toast.error('Failed to delete product!');
+      console.error(error)
+      toast.error('Failed to delete product!')
     } finally {
-      setLoading(false);
-      setConfirmId(null);
+      setLoading(false)
+      setConfirmId(null)
     }
-  };
+  }
 
   return (
     <div className="bg-[#FAFAFA] py-10 relative">
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {localProducts.map((item) => (
+        {searchResults.map((item) => (
           <div
             key={item.id}
             className="relative bg-white border border-[#E5E5E5] rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
@@ -49,7 +57,10 @@ function Cards() {
                 alt={item.title}
                 className="h-40 w-full object-contain mb-4 transition-transform duration-300 group-hover:scale-105"
               />
+              {/* overlay */}
               <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+
+              {/* edit/delete buttons */}
               <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                 <NavLink to={`/edit/${item.id}`}>
                   <button className="bg-white p-2 rounded-full shadow hover:bg-gray-100 cursor-pointer">
@@ -64,6 +75,7 @@ function Cards() {
                 </button>
               </div>
             </div>
+
             <div className="p-4 relative z-30">
               <h3 className="font-semibold text-sm line-clamp-2">{item.title}</h3>
               <div className="mt-2 flex items-center justify-between">
@@ -118,8 +130,7 @@ function Cards() {
 
       <ToastContainer position="top-center" />
     </div>
-  );
+  )
 }
-
 
 export default Cards

@@ -13,95 +13,64 @@ function Home() {
     return () => clearTimeout(timer)
   }, [])
 
-  if (loading) {
-    return (
-      <div className="bg-[#FAFAFA] min-h-screen">
-        {/* NavBar skeleton */}
-        <div className="bg-white px-8 py-4 flex items-center justify-between">
-          {/* Logo skeleton */}
-          <Skeleton variant="text" width={60} sx={{ bgcolor: '#f0f0f0' }} />
-
-          {/* Searchbar skeleton */}
-          <Skeleton
-            variant="rectangular"
-            width={250}
-            height={36}
-            sx={{ borderRadius: 9999, bgcolor: '#f0f0f0' }}
-          />
-
-          {/* Icons skeleton */}
-          <div className="flex gap-6">
-            <Skeleton variant="circular" width={30} height={30} sx={{ bgcolor: '#f0f0f0' }} />
-            <Skeleton variant="circular" width={30} height={30} sx={{ bgcolor: '#f0f0f0' }} />
-          </div>
-        </div>
-
-        {/* Categories skeleton */}
-        <div className="flex justify-center gap-6 py-2 bg-gray-100">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} variant="text" width={50} sx={{ bgcolor: '#f0f0f0' }} />
-          ))}
-        </div>
-
-        {/* HeroSlider skeleton */}
-        <div className="mx-auto w-[80%] max-w-5xl mt-4">
-          <Skeleton
-            variant="rounded"
-            height={350}
-            animation="wave"
-            sx={{ bgcolor: '#f0f0f0' }}
-          />
-        </div>
-
-        {/* Cards skeleton */}
-        <div className="mx-auto w-[80%] max-w-6xl mt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="border border-[#E5E5E5] rounded-xl p-4 bg-white"
-              >
-                {/* image */}
-                <Skeleton
-                  variant="rectangular"
-                  height={150}
-                  animation="wave"
-                  sx={{ bgcolor: '#f0f0f0' }}
-                />
-                <div className="mt-3 space-y-2">
-                  <Skeleton
-                    variant="text"
-                    width="80%"
-                    animation="wave"
-                    sx={{ bgcolor: '#f0f0f0' }}
-                  />
-                  <Skeleton
-                    variant="text"
-                    width="40%"
-                    animation="wave"
-                    sx={{ bgcolor: '#f0f0f0' }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="bg-[#FAFAFA] relative min-h-screen">
-      <HeroSlider />
-      <Cards />
+      
+      {loading ? (
+        <>
+          {/* HeroSlider skeleton */}
+          <div className="mx-auto w-[80%] max-w-5xl mt-4">
+            <Skeleton
+              variant="rounded"
+              height={350}
+              animation="wave"
+              sx={{ bgcolor: '#f0f0f0' }}
+            />
+          </div>
 
-      {/* Floating Add Product Button */}
-      <NavLink to="/add-product">
-      <button
-      className="fixed bottom-6 right-6 bg-[#111111] text-white px-5 py-3 rounded-full shadow-lg hover:bg-[#333333] transition">
-        + Add Product
-      </button>
-      </NavLink>
+          {/* Cards skeleton */}
+          <div className="mx-auto w-[80%] max-w-6xl mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="border border-[#E5E5E5] rounded-xl p-4 bg-white">
+                  <Skeleton
+                    variant="rectangular"
+                    height={150}
+                    animation="wave"
+                    sx={{ bgcolor: '#f0f0f0' }}
+                  />
+                  <div className="mt-3 space-y-2">
+                    <Skeleton
+                      variant="text"
+                      width="80%"
+                      animation="wave"
+                      sx={{ bgcolor: '#f0f0f0' }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="40%"
+                      animation="wave"
+                      sx={{ bgcolor: '#f0f0f0' }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <HeroSlider />
+          <Cards />
+
+          {/* Floating Add Product Button */}
+          <NavLink to="/add-product">
+            <button className="fixed bottom-6 right-6 bg-[#111111] text-white px-5 py-3 rounded-full shadow-lg hover:bg-[#333333] transition">
+              + Add Product
+            </button>
+          </NavLink>
+        </>
+      )}
     </div>
   )
 }
