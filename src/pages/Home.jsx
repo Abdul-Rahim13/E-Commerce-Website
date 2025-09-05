@@ -3,6 +3,7 @@ import Skeleton from '@mui/material/Skeleton'
 import NavBar from '../components/NavBar'
 import HeroSlider from '../components/HeroSlider'
 import Cards from '../components/Cards'
+import { NavLink } from 'react-router-dom'
 
 function Home() {
   const [loading, setLoading] = useState(true)
@@ -90,10 +91,18 @@ function Home() {
   }
 
   return (
-    <div className="bg-[#FAFAFA]">
+    <div className="bg-[#FAFAFA] relative min-h-screen">
       <NavBar />
       <HeroSlider />
       <Cards />
+
+      {/* Floating Add Product Button */}
+      <NavLink to="/add-product">
+      <button
+      className="fixed bottom-6 right-6 bg-[#111111] text-white px-5 py-3 rounded-full shadow-lg hover:bg-[#333333] transition">
+        + Add Product
+      </button>
+      </NavLink>
     </div>
   )
 }

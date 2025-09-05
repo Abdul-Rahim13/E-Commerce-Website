@@ -27,10 +27,14 @@ function EditCard() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    toast.success('Product updated successfully!')
+    if (form.id === '' || form.title === '' || form.price === '' || form.description === '' || form.category === '' || form.image === ''){
+      toast.error('Please Fill the Form First!')
+    }else{
+      toast.success('Product updated successfully!')
+    }
   }
 
-  // Skeleton UI (matches your palette)
+  // Skeleton UI 
   if (loading) {
     return (
       <div className="flex justify-center items-start min-h-screen bg-[#FAFAFA] py-10">
@@ -50,7 +54,6 @@ function EditCard() {
     )
   }
 
-  // Real form UI (matches your palette)
   return (
     <div className="flex justify-center items-start min-h-screen bg-[#FFFFFF] py-10">
       <form

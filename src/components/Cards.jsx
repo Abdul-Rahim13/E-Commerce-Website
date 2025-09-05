@@ -38,14 +38,9 @@ function Cards() {
 
               <p className="text-xs text-gray-400 mt-1">{item.category}</p>
 
-              {/* “View Details” stays clickable */}
-              <button className="relative z-30 mt-3 w-full bg-black text-white text-sm py-2 rounded-lg hover:bg-gray-800">
-                View Details
-              </button>
+              {/* Blur + dark overlay*/}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
             </div>
-
-            {/* Blur + dark overlay (visual only, no click block) */}
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none"></div>
 
             {/* Edit/Delete buttons appear above blur */}
             <div className="absolute bottom-16 left-0 right-0 flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
@@ -60,6 +55,15 @@ function Cards() {
                 </button>
               </NavLink>
             </div>
+              {/* “View Details” stays clickable */}
+              <NavLink to={`/product-details/${item.id}`}>
+                  <button className="relative z-30 mt-3 w-full bg-black text-white text-sm py-2 rounded-lg hover:bg-gray-800">
+                     View Details
+                  </button>
+                </NavLink>
+            </div>
+
+            
           </div>
         ))}
       </div>
