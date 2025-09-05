@@ -5,10 +5,13 @@ import EditCard from './components/EditCard'
 import DeleteCard from './components/DeleteCard'
 import AddProducts from './components/AddProducts'
 import ProductDetails from './components/ProductDetails'
+import NavBar from './components/NavBar'
 
 function App() {
 
   return (
+    <>
+    <NavBar/> 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/edit/:id" element={<EditCard />} />
@@ -16,6 +19,7 @@ function App() {
         <Route path="/add-product" element={<AddProducts />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
       </Routes>
+    </>
   )
 }
 

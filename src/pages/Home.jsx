@@ -92,7 +92,6 @@ function Home() {
 
   return (
     <div className="bg-[#FAFAFA] relative min-h-screen">
-      <NavBar />
       <HeroSlider />
       <Cards />
 
